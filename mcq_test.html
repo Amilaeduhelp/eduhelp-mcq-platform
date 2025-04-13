@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCQ Test</title>
+  <style>
+    :root {
+      --primary-color: #4a90e2;
+      --primary-dark: #357abd;
+      --secondary-color: #4caf50;
+      --secondary-dark: #3d8b40;
+      --text-color: #333;
+      --light-bg: #f8f9fa;
+      --dark-bg: #212529;
+      --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #f5f7fa, #e0e6ed);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      color: var(--text-color);
+    }
+    
+    .top-bar {
+      background: var(--dark-bg);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .timer-container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .timer-label {
+      font-weight: 600;
+      opacity: 0.9;
+    }
+    
+    .timer-value {
+      font-family: monospace;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-left: 5px;
+    }
+    
+    #video-container {
+      width: 100%;
+      height: 300px;
+      background: #000;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
+    }
+    
+    .content-container {
+      width: 90%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px 0;
+      flex: 1;
+    }
+    
+    .answer-panel {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .option {
+      background: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+      min-width: 50px;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    .option:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    }
+    
+    .option.active {
+      background: var(--secondary-color);
+      color: white;
+    }
+    
+    .question-nav {
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    #start-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    
+    .start-content {
+      text-align: center;
+      color: white;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .start-content h1 {
+      margin-top: 0;
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+    
+    #start-overlay button {
+      padding: 15px 30px;
+      font-size: 18px;
+      background: var(--secondary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    #start-overlay button:hover {
+      background: var(--secondary-dark);
+      transform: scale(1.05);
+    }
+    
+    #result-section {
+      text-align: center;
+      margin: 30px 0;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: var(--card-shadow);
+    }
+    
+    #score-output {
+      font-size: 24px;
+      margin: 20px 0;
+      font-weight: 500;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: var(--transition);
+    }
+    
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    .btn.next {
+      background: var(--secondary-color);
+    }
+    
+    .btn.next:hover {
+      background: var(--secondary-dark);
+    }
+    
+    #more-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px;
+      background: #6c757d;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: var(--transition);
+    }
+    
+    #more-btn:hover {
+      background: #5a6268;
+      transform: translateY(-2px);
+    }
+    
+    .question-indicator {
+      margin-bottom: 15px;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+    
+    @media (max-width: 768px) {
+      .option {
+        padding: 12px 20px;
+      }
+      
+      #video-container {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="start-overlay">
+    <div class="start-content">
+      <h1>MCQ Test</h1>
+      <button onclick="beginTest()">Start Test</button>
+    </div>
+  </div>
+
+  <div class="top-bar">
+    <div class="timer-container">
+      <span class="timer-label">Total Time:</span>
+      <span id="total-timer" class="timer-value">60:00</span>
+    </div>
+    <div class="timer-container">
+      <span class="timer-label">Question Time:</span>
+      <span id="question-timer" class="timer-value">01:00</span>
+    </div>
+  </div>
+
+  <div class="content-container">
+    <div id="video-container"></div>
+    
+    <div class="question-indicator">Question <span id="current-question">1</span> of 40</div>
+    
+    <div class="answer-panel" id="answer-panel"></div>
+
+    <div class="question-nav">
+      <button id="next-btn" class="btn next" onclick="nextQuestion()">Next Question</button>
+    </div>
+
+    <div id="result-section">
+      <button id="generate-btn" class="btn" onclick="generateResult()">Generate Result</button>
+      <div id="score-output"></div>
+      <a id="more-btn" href="https://www.eduhelp.lk/index.php/uncategorized/mcq-%e0%b7%80%e0%b7%92%e0%b6%9c%e0%b7%8a%e0%b6%bb%e0%b7%84%e0%b6%ba/45371/" target="_blank" style="display:none;">More details</a>
+    </div>
+  </div>
+
+  <audio id="beep" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+  
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const videoId = urlParams.get("video") || "mWZNR-_z6zI";
+    const subject = urlParams.get("subject") || "";
+    const level = urlParams.get("level") || "";
+
+    const correctAnswers = [3,1,3,4,1,2,3,4,5,4,3,1,2,3,4,5,4,3,2,4,5,3,4,4,3,4,5,4,3,3,3,4,5,4,3,4,2,1,3,4];
+
+    let player;
+    let totalTime = 3600;
+    let questionTime = 60;
+    let currentQuestion = 1;
+    const totalQuestions = 40;
+    const userAnswers = {};
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player("video-container", {
+        height: "100%",
+        width: "100%",
+        videoId: videoId,
+        playerVars: { autoplay: 0, controls: 1, enablejsapi: 1 },
+        events: {
+          onReady: () => console.log("YouTube Player Ready")
+        }
+      });
+    }
+
+    function beginTest() {
+      document.getElementById("start-overlay").style.display = "none";
+      renderAnswerPanel();
+      startTimers();
+      if (player && player.playVideo) player.playVideo();
+    }
+
+    function startTimers() {
+      setInterval(() => {
+        if (totalTime > 0) {
+          totalTime--;
+          questionTime--;
+          updateTimers();
+          if ([55, 58, 59].includes(questionTime)) document.getElementById("beep").play();
+          if (questionTime <= 0) nextQuestion();
+        }
+      }, 1000);
+    }
+
+    function updateTimers() {
+      document.getElementById("total-timer").innerText = formatTime(totalTime);
+      document.getElementById("question-timer").innerText = formatTime(questionTime);
+    }
+
+    function formatTime(t) {
+      const m = String(Math.floor(t / 60)).padStart(2, '0');
+      const s = String(t % 60).padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function nextQuestion() {
+      const selected = document.querySelector(".option.active");
+      if (selected) userAnswers[currentQuestion] = parseInt(selected.dataset.val);
+      currentQuestion++;
+      document.getElementById("current-question").textContent = currentQuestion;
+      
+      if (currentQuestion > totalQuestions) {
+        alert("Test complete! You can now generate your result.");
+        return;
+      }
+      questionTime = 60;
+      renderAnswerPanel();
+      if (player && player.seekTo) player.seekTo((currentQuestion - 1) * 60, true);
+    }
+
+    function renderAnswerPanel() {
+      const panel = document.getElementById("answer-panel");
+      panel.innerHTML = "";
+      for (let i = 1; i <= 5; i++) {
+        const opt = document.createElement("div");
+        opt.className = "option";
+        opt.dataset.val = i;
+        opt.innerText = i;
+        if (userAnswers[currentQuestion] === i) opt.classList.add("active");
+        opt.onclick = () => {
+          document.querySelectorAll(".option").forEach(el => el.classList.remove("active"));
+          opt.classList.add("active");
+          userAnswers[currentQuestion] = i;
+        };
+        panel.appendChild(opt);
+      }
+    }
+
+    function generateResult() {
+      let score = 0;
+      for (let i = 1; i <= totalQuestions; i++) {
+        if (userAnswers[i] === correctAnswers[i - 1]) score++;
+      }
+      document.getElementById("score-output").innerText = `✅ Your Score: ${score} / ${totalQuestions}`;
+      document.getElementById("more-btn").style.display = "inline-block";
+    }
+  </script>
+</body>
+</html>
