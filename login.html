@@ -1,95 +1,217 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Login Demo</title>
   <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 20px;
     }
     
     .container {
       background-color: white;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      width: 350px;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 380px;
       text-align: center;
     }
     
     h2 {
       color: #333;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+    
+    .input-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #555;
     }
     
     input {
       width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
+      padding: 14px 16px;
+      margin-bottom: 5px;
       box-sizing: border-box;
       border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 14px;
-      transition: border-color 0.3s;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s;
     }
     
     input:focus {
       border-color: #4a90e2;
       outline: none;
+      box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
     }
     
     button {
       background-color: #4a90e2;
       color: white;
-      padding: 12px 20px;
+      padding: 14px 20px;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 16px;
+      font-weight: 500;
       width: 100%;
       transition: background-color 0.3s;
+      margin-top: 10px;
     }
     
     button:hover {
       background-color: #357abd;
     }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    .signup-link {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+    
+    .signup-button {
+      background-color: #4caf50;
+      margin-top: 8px;
+    }
+    
+    .signup-button:hover {
+      background-color: #45a049;
+    }
+    
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 15px;
+    }
+    
+    .loading-spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #4a90e2;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 25px 20px;
+      }
+      
+      body {
+        padding: 15px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Login Form</h2>
+    <h2>Login</h2>
     <form id="loginForm">
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <button type="submit">Login</button>
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Enter your email" required autocomplete="email">
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+      </div>
+      <button type="submit" id="loginButton">Login</button>
+      <div class="loading" id="loadingIndicator">
+        <span class="loading-spinner"></span> Logging in...
+      </div>
     </form>
+    
+    <div class="signup-link">
+      <p>Don't have an account?</p>
+      <a href="index.html"><button type="button" class="signup-button">Create Account</button></a>
+    </div>
   </div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    
     const supabaseUrl = 'https://yvsdimcbhqdldldakxnc.supabase.co'
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2c2RpbWNiaHFkbGRsZGFreG5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1MTIxMjIsImV4cCI6MjA2MDA4ODEyMn0.wFfc6deQe7b6pCbrrP1usbtXPCvKfSV7ha6FSqK27i8'
     const supabase = createClient(supabaseUrl, supabaseKey)
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault()
-      const email = document.getElementById('email').value
-      const password = document.getElementById('password').value
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      })
-      if (error) {
-        alert('Login failed: ' + error.message)
-      } else {
-        // redirect if login is successful
-        window.location.href = 'success.html'
+    
+    const loginForm = document.getElementById('loginForm');
+    const loginButton = document.getElementById('loginButton');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Show loading indicator and disable button
+      loginButton.disabled = true;
+      loadingIndicator.style.display = 'block';
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+        
+        if (error) {
+          alert('Login failed: ' + error.message);
+        } else {
+          // Redirect if login is successful
+          window.location.href = 'success.html';
+        }
+      } catch (err) {
+        alert('An unexpected error occurred. Please try again.');
+        console.error(err);
+      } finally {
+        // Hide loading indicator and enable button
+        loginButton.disabled = false;
+        loadingIndicator.style.display = 'none';
       }
-    })
+    });
+    
+    // Fix for iOS 100vh issue
+    const appHeight = () => {
+      const doc = document.documentElement;
+      doc.style.setProperty('--app-height', `${window.innerHeight}px`);
+    }
+    window.addEventListener('resize', appHeight);
+    appHeight();
   </script>
 </body>
 </html>
