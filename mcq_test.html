@@ -58,6 +58,21 @@
       border-radius: 4px;
       margin-left: 5px;
     }
+
+    .banner {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 20px;
+      background-color: white;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .banner img {
+      max-width: 280px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
     
     #video-container {
       width: 100%;
@@ -213,6 +228,34 @@
       color: var(--text-color);
     }
     
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      margin-top: 30px;
+    }
+    
+    .copyright {
+      font-size: 14px;
+      color: var(--light-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    
+    .copyright a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    
+    .copyright a:hover {
+      color: var(--primary-dark);
+    }
+    
     @media (max-width: 768px) {
       .option {
         padding: 12px 20px;
@@ -220,6 +263,10 @@
       
       #video-container {
         height: 250px;
+      }
+      
+      .banner img {
+        max-width: 250px;
       }
     }
   </style>
@@ -244,6 +291,10 @@
   </div>
 
   <div class="content-container">
+    <div class="banner">
+      <img src="https://www.eduhelp.lk/wp-content/uploads/2025/04/2025_4-web-app-01.png" alt="EduHelp Banner">
+    </div>
+    
     <div id="video-container"></div>
     
     <div class="question-indicator">Question <span id="current-question">1</span> of 40</div>
@@ -260,6 +311,15 @@
       <a id="more-btn" href="https://www.eduhelp.lk/index.php/uncategorized/mcq-%e0%b7%80%e0%b7%92%e0%b6%9c%e0%b7%8a%e0%b6%bb%e0%b7%84%e0%b6%ba/45371/" target="_blank" style="display:none;">More details</a>
     </div>
   </div>
+
+  <footer>
+    <div class="copyright">
+      <span>© 2025</span>
+      <a href="https://www.eduhelp.lk" target="_blank">www.eduhelp.lk</a>
+      <span>| All Rights Reserved</span>
+      <span>📚</span>
+    </div>
+  </footer>
 
   <audio id="beep" src="https://www.soundjay.com/button/beep-07.wav"></audio>
   
@@ -362,6 +422,11 @@
       document.getElementById("score-output").innerText = `✅ Your Score: ${score} / ${totalQuestions}`;
       document.getElementById("more-btn").style.display = "inline-block";
     }
+    
+    // Image error handling
+    document.querySelector('.banner img').onerror = function() {
+      document.querySelector('.banner').style.display = 'none';
+    };
   </script>
 </body>
 </html>
