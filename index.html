@@ -21,6 +21,19 @@
       padding: 15px;
     }
     
+    .banner {
+      margin: -10px auto 20px;
+      max-width: 100%;
+    }
+    
+    .banner img {
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+    
     .container {
       background-color: #fff;
       padding: 25px;
@@ -130,11 +143,19 @@
       input[type="password"] {
         font-size: 16px; /* Prevents iOS zoom on focus */
       }
+      
+      .banner img {
+        max-width: 250px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="banner">
+      <img src="https://www.eduhelp.lk/wp-content/uploads/2025/04/2025_4-web-app-01.png" alt="EduHelp Banner">
+    </div>
+    
     <h2>Create Account</h2>
     <form id="signupForm">
       <div class="input-group">
@@ -177,6 +198,12 @@
         }, 1000); // Redirect after 1 second delay to show the alert
       }
     });
+    
+    // Image error handling
+    document.querySelector('.banner img').onerror = function() {
+      // If image fails to load, hide the banner container
+      document.querySelector('.banner').style.display = 'none';
+    };
     
     // Fix for iOS 100vh issue
     const appHeight = () => {
