@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Success Page - Video Library</title>
+  <title>Success Page - Knowledge Library</title>
   <style>
     :root {
       --primary-color: #4a90e2;
@@ -23,24 +23,39 @@
       background: linear-gradient(135deg, #f5f7fa, #e0e6ed);
       min-height: 100vh;
       color: var(--text-color);
+      display: flex;
+      flex-direction: column;
     }
     
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 30px 20px;
+      flex: 1;
     }
     
     header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       padding: 20px;
+    }
+    
+    .banner {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .banner img {
+      max-width: 280px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
     }
     
     h1 {
       color: var(--primary-dark);
       font-size: 2.5rem;
-      margin: 0;
+      margin: 10px 0;
       font-weight: 700;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
@@ -127,6 +142,34 @@
       font-size: 18px;
     }
     
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      margin-top: 30px;
+    }
+    
+    .copyright {
+      font-size: 14px;
+      color: var(--light-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    
+    .copyright a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    
+    .copyright a:hover {
+      color: var(--primary-dark);
+    }
+    
     @media (max-width: 768px) {
       .container {
         padding: 20px 15px;
@@ -138,6 +181,10 @@
       
       .video-grid {
         gap: 20px;
+      }
+      
+      .banner img {
+        max-width: 250px;
       }
     }
     
@@ -155,7 +202,10 @@
 <body>
   <div class="container">
     <header>
-      <h1>🎓 Video Library</h1>
+      <div class="banner">
+        <img src="https://www.eduhelp.lk/wp-content/uploads/2025/04/2025_4-web-app-01.png" alt="EduHelp Banner">
+      </div>
+      <h1>Knowledge Library</h1>
     </header>
     
     <div class="dropdowns">
@@ -175,6 +225,15 @@
 
     <div class="video-grid" id="video-grid"></div>
   </div>
+  
+  <footer>
+    <div class="copyright">
+      <span>© 2025</span>
+      <a href="https://www.eduhelp.lk" target="_blank">www.eduhelp.lk</a>
+      <span>| All Rights Reserved</span>
+      <span>📚</span>
+    </div>
+  </footer>
 
   <script>
     const videoData = [
@@ -215,6 +274,12 @@
       const level = parseInt(levelSelect.value);
 
       videoGrid.innerHTML = '';
+      
+      if (!subject || isNaN(level)) {
+        videoGrid.innerHTML = '<div class="no-videos">Please select both subject and level to view videos.</div>';
+        return;
+      }
+
       const filtered = videoData.filter(v => v.subject === subject && v.level === level);
 
       if (filtered.length === 0) {
@@ -239,8 +304,16 @@
       });
     }
 
+    // Image error handling
+    document.querySelector('.banner img').onerror = function() {
+      document.querySelector('.banner').style.display = 'none';
+    };
+
     subjectSelect.addEventListener('change', loadVideos);
     levelSelect.addEventListener('change', loadVideos);
+    
+    // Initial message
+    videoGrid.innerHTML = '<div class="no-videos">Please select a subject and level to view available videos.</div>';
   </script>
 </body>
 </html>
